@@ -1,0 +1,31 @@
+<div id="bpe-lesson-inline">
+<style>
+#bpe-lesson-inline{display:grid;gap:calc(var(--font-size-base)*1);color:var(--foreground)}
+#bpe-lesson-inline .word{display:flex;flex-wrap:wrap;align-items:center;gap:calc(var(--font-size-base)*.5);margin:calc(var(--font-size-base)*.75) 0}
+#bpe-lesson-inline .word-label{width:65px}
+#bpe-lesson-inline .piece{padding:calc(var(--font-size-base)*.5) calc(var(--font-size-base)*.75);background:color-mix(in srgb,var(--viz-series-1) 15%,transparent);font-family:monospace}
+#bpe-lesson-inline .numbers{display:flex;flex-wrap:wrap;gap:calc(var(--font-size-base)*2)}
+</style>
+<h2>Build a vocabulary, one merge at a time</h2>
+<span class="text-small">Character-based teaching example · not a production tokenizer</span>
+<div id="bpe-words" aria-label="Text split into pieces"></div>
+<div class="numbers tabular-nums" aria-live="polite"><span>Pieces: <strong id="bpe-pieces">17</strong></span><span>Vocabulary entries: <strong id="bpe-vocabulary">7</strong></span><span>Merges: <strong id="bpe-step">0</strong></span></div>
+<div id="bpe-candidate" aria-live="polite"></div>
+<div class="viz-controls"><button class="btn btn-primary" id="bpe-merge" type="button">Merge most frequent pair</button><button class="btn" id="bpe-reset" type="button">Start again</button></div>
+<div class="text-small" id="bpe-last" aria-live="polite"></div>
+</div>
+<script>
+(()=>{
+const root=document.getElementById('bpe-lesson-inline');
+const corpus=['low','low','lower','lowest'];
+let words,vocab,step,last;
+const find=id=>root.querySelector('#'+id);
+function init(){words=corpus.map(w=>[...w]);vocab=new Set(corpus.join(''));step=0;last='';}
+function pairs(){const counts=new Map();words.forEach(w=>{for(let i=0;i<w.length-1;i++){const k=JSON.stringify([w[i],w[i+1]]);counts.set(k,(counts.get(k)||0)+1);}});return [...counts].sort((a,b)=>b[1]-a[1]);}
+function merge(){const top=pairs()[0];if(!top)return;const [a,b]=JSON.parse(top[0]);words=words.map(w=>{const out=[];for(let i=0;i<w.length;i++){if(w[i]===a&&w[i+1]===b){out.push(a+b);i++;}else out.push(w[i]);}return out;});vocab.add(a+b);step++;last=a+' + '+b+' → '+(a+b)+' · '+top[1]+' occurrences';}
+function draw(){find('bpe-words').replaceChildren(...words.map((w,i)=>{const row=document.createElement('div');row.className='word';const label=document.createElement('span');label.className='word-label';label.textContent=corpus[i];row.append(label);w.forEach(p=>{const el=document.createElement('span');el.className='piece';el.textContent=p;row.append(el);});return row;}));find('bpe-pieces').textContent=words.flat().length;find('bpe-vocabulary').textContent=vocab.size;find('bpe-step').textContent=step;const top=pairs()[0];find('bpe-candidate').textContent=top?'Next pair: '+JSON.parse(top[0]).join(' + ')+' · '+top[1]+' occurrences':'Every word is now one piece.';find('bpe-merge').disabled=!top;find('bpe-last').textContent=last?'Last merge: '+last:'No merges yet.';}
+function save(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{lesson:'bpe',merges:step,pieces:words.flat().length,vocabularyEntries:vocab.size},privateContent:{step}}).catch(()=>{});}
+function restore(s){init();const n=s?.privateContent?.step;if(Number.isInteger(n))for(let i=0;i<Math.min(20,Math.max(0,n));i++)merge();draw();}
+find('bpe-merge').addEventListener('click',()=>{merge();draw();save();});find('bpe-reset').addEventListener('click',()=>{init();draw();save();});restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState);});
+})();
+</script>

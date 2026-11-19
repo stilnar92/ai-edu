@@ -1,0 +1,28 @@
+<div id="real-tokenization">
+<style>
+#real-tokenization{display:grid;gap:calc(var(--font-size-base)*1.25);color:var(--foreground)}
+#real-tokenization .tokens{display:flex;flex-wrap:wrap;gap:calc(var(--font-size-base)*.65)}
+#real-tokenization .token-piece{display:grid;gap:calc(var(--font-size-base)*.5);padding:calc(var(--font-size-base)*1);background:color-mix(in srgb,var(--viz-series-1) 14%,transparent);text-align:center}
+#real-tokenization .group{display:grid;gap:calc(var(--font-size-base)*.5)}
+#real-tokenization .literal{white-space:pre-wrap;overflow-wrap:anywhere;font-family:monospace}
+</style>
+<h2>Real text → real tokens</h2>
+<span class="text-small">cl100k_base · verified with tiktoken 0.14.0 · recorded examples</span>
+<label class="form-label" for="real-example">1. Choose the text
+<select id="real-example" class="form-select"><option value="0">hello world</option><option value="1">Hello world — capital H</option><option value="2">hello  world — two spaces</option><option value="3">I am replaying the video.</option></select></label>
+<div class="group"><span>Exact input</span><code class="literal" id="real-input"></code></div>
+<div class="group"><span>2. Token pieces and their IDs</span><div id="real-pieces" class="tokens" aria-live="polite"></div><span class="text-small">␣ represents a space inside the token.</span></div>
+<div class="group"><span>3. Numerical sequence supplied to the model</span><code class="literal" id="real-ids"></code></div>
+<div class="group"><span>Decode back to text</span><code class="literal" id="real-decoded"></code><span id="real-count" class="text-small" aria-live="polite"></span></div>
+</div>
+<script>
+(()=>{
+const data={"encoding": "cl100k_base", "library": "tiktoken", "version": "0.14.0", "examples": [{"text": "hello world", "ids": [15339, 1917], "pieces": ["hello", " world"], "bytes": [[104, 101, 108, 108, 111], [32, 119, 111, 114, 108, 100]], "decoded": "hello world"}, {"text": "Hello world", "ids": [9906, 1917], "pieces": ["Hello", " world"], "bytes": [[72, 101, 108, 108, 111], [32, 119, 111, 114, 108, 100]], "decoded": "Hello world"}, {"text": "hello  world", "ids": [15339, 220, 1917], "pieces": ["hello", " ", " world"], "bytes": [[104, 101, 108, 108, 111], [32], [32, 119, 111, 114, 108, 100]], "decoded": "hello  world"}, {"text": "I am replaying the video.", "ids": [40, 1097, 35585, 287, 279, 2835, 13], "pieces": ["I", " am", " replay", "ing", " the", " video", "."], "bytes": [[73], [32, 97, 109], [32, 114, 101, 112, 108, 97, 121], [105, 110, 103], [32, 116, 104, 101], [32, 118, 105, 100, 101, 111], [46]], "decoded": "I am replaying the video."}]};
+const root=document.getElementById('real-tokenization');
+const get=id=>root.querySelector('#'+id);
+function draw(){const example=data.examples[Number(get('real-example').value)];get('real-input').textContent=JSON.stringify(example.text);get('real-pieces').replaceChildren(...example.pieces.map((piece,i)=>{const el=document.createElement('div');el.className='token-piece';const text=document.createElement('code');text.textContent=piece.replaceAll(' ','␣');const id=document.createElement('span');id.className='text-small tabular-nums';id.textContent='ID '+example.ids[i];el.append(text,id);return el;}));get('real-ids').textContent=JSON.stringify(example.ids);get('real-decoded').textContent=JSON.stringify(example.decoded);get('real-count').textContent=example.ids.length+' tokens · original text recovered exactly';}
+function restore(s){const index=s?.modelContent?.exampleIndex;get('real-example').value=Number.isInteger(index)&&index>=0&&index<data.examples.length?String(index):'0';draw();}
+get('real-example').addEventListener('change',()=>{draw();const exampleIndex=Number(get('real-example').value);if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{exampleIndex,text:data.examples[exampleIndex].text,ids:data.examples[exampleIndex].ids},privateContent:null}).catch(()=>{});});
+restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState);});
+})();
+</script>

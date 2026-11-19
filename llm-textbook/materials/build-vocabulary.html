@@ -1,0 +1,25 @@
+<div id="build-vocabulary">
+<style>
+#build-vocabulary{display:grid;gap:calc(var(--font-size-base)*1);color:var(--foreground)}
+#build-vocabulary .samples{display:flex;flex-wrap:wrap;gap:calc(var(--font-size-base)*1.5)}
+#build-vocabulary .sample{display:grid;gap:calc(var(--font-size-base)*.5)}
+#build-vocabulary .pieces{padding:calc(var(--font-size-base)*1);background:color-mix(in srgb,var(--viz-series-1) 14%,transparent);font-family:monospace}
+</style>
+<h2>Training data → new vocabulary entries</h2>
+<span class="text-small">Our own byte-level BPE · custom IDs · three separate samples</span>
+<div class="viz-controls"><button type="button" class="btn" id="bv-prev">← Previous</button><span id="bv-stage"></span><button type="button" class="btn btn-primary" id="bv-next">Next merge →</button></div>
+<div class="samples" id="bv-samples" aria-live="polite"></div>
+<div id="bv-action" aria-live="polite"></div>
+<table class="table"><caption>Adjacent pairs at this stage</caption><thead><tr><th>Pair</th><th>Occurrences</th></tr></thead><tbody id="bv-pairs"></tbody></table>
+<table class="table"><caption id="bv-vocab-title"></caption><thead><tr><th>Piece</th><th>Assigned ID</th></tr></thead><tbody id="bv-vocab"></tbody></table>
+</div>
+<script>
+(()=>{
+const data={"samples": ["cat", "cat", "car"], "stages": [{"sequences": [[99, 97, 116], [99, 97, 116], [99, 97, 114]], "pieces": [["c", "a", "t"], ["c", "a", "t"], ["c", "a", "r"]], "vocabularySize": 256, "added": null, "pairs": [{"left": "c", "right": "a", "count": 3}, {"left": "a", "right": "t", "count": 2}, {"left": "a", "right": "r", "count": 1}], "entries": [{"id": 97, "piece": "a"}, {"id": 99, "piece": "c"}, {"id": 114, "piece": "r"}, {"id": 116, "piece": "t"}]}, {"sequences": [[256, 116], [256, 116], [256, 114]], "pieces": [["ca", "t"], ["ca", "t"], ["ca", "r"]], "vocabularySize": 257, "added": {"left": "c", "right": "a", "id": 256, "piece": "ca", "count": 3}, "pairs": [{"left": "ca", "right": "t", "count": 2}, {"left": "ca", "right": "r", "count": 1}], "entries": [{"id": 97, "piece": "a"}, {"id": 99, "piece": "c"}, {"id": 114, "piece": "r"}, {"id": 116, "piece": "t"}, {"id": 256, "piece": "ca"}]}, {"sequences": [[257], [257], [256, 114]], "pieces": [["cat"], ["cat"], ["ca", "r"]], "vocabularySize": 258, "added": {"left": "ca", "right": "t", "id": 257, "piece": "cat", "count": 2}, "pairs": [{"left": "ca", "right": "r", "count": 1}], "entries": [{"id": 97, "piece": "a"}, {"id": 99, "piece": "c"}, {"id": 114, "piece": "r"}, {"id": 116, "piece": "t"}, {"id": 256, "piece": "ca"}, {"id": 257, "piece": "cat"}]}]};
+const root=document.getElementById('build-vocabulary');const get=id=>root.querySelector('#'+id);let step=0;
+function draw(){const s=data.stages[step];get('bv-stage').textContent=['Initial bytes','First merge','Second merge · stop'][step];get('bv-prev').disabled=step===0;get('bv-next').disabled=step===2;get('bv-samples').replaceChildren(...s.pieces.map((parts,i)=>{const el=document.createElement('div');el.className='sample';const label=document.createElement('span');label.textContent='Sample '+(i+1)+': '+data.samples[i];const pieces=document.createElement('div');pieces.className='pieces';pieces.textContent=parts.join(' | ');const ids=document.createElement('code');ids.textContent=JSON.stringify(s.sequences[i]);el.append(label,pieces,ids);return el;}));get('bv-action').textContent=s.added?'Added '+s.added.piece+' → ID '+s.added.id+' from '+s.added.count+' occurrences.':'Start with all 256 possible single bytes; only relevant entries are shown.';get('bv-pairs').innerHTML=s.pairs.map(p=>'<tr><td>'+p.left+' + '+p.right+'</td><td>'+p.count+'</td></tr>').join('');get('bv-vocab-title').textContent='Vocabulary: '+s.vocabularySize+' total entries · relevant subset';get('bv-vocab').innerHTML=s.entries.map(e=>'<tr><td>'+e.piece+'</td><td>'+e.id+'</td></tr>').join('');}
+function save(){if(window.openai?.setWidgetState)window.openai.setWidgetState({modelContent:{lesson:'building-bpe-vocabulary',step,vocabularySize:data.stages[step].vocabularySize},privateContent:null}).catch(()=>{});}
+function restore(s){const n=s?.modelContent?.step;step=Number.isInteger(n)&&n>=0&&n<=2?n:0;draw();}
+get('bv-next').onclick=()=>{step=Math.min(2,step+1);draw();save();};get('bv-prev').onclick=()=>{step=Math.max(0,step-1);draw();save();};restore(window.openai?.widgetState);window.addEventListener('openai:set_globals',e=>{if(e.detail?.globals?.widgetState)restore(e.detail.globals.widgetState);});
+})();
+</script>

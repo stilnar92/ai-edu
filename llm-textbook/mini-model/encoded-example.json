@@ -1,0 +1,69 @@
+{
+  "text": "the small dog eats fish",
+  "ids": [
+    259,
+    115,
+    109,
+    97,
+    108,
+    108,
+    263,
+    111,
+    103,
+    32,
+    101,
+    261,
+    256,
+    102,
+    105,
+    115,
+    104
+  ],
+  "pieces": [
+    "the ",
+    "s",
+    "m",
+    "a",
+    "l",
+    "l",
+    " d",
+    "o",
+    "g",
+    " ",
+    "e",
+    "at",
+    "s ",
+    "f",
+    "i",
+    "s",
+    "h"
+  ],
+  "appliedMerges": [
+    {
+      "merged": "s ",
+      "id": 256
+    },
+    {
+      "merged": "e ",
+      "id": 257
+    },
+    {
+      "merged": "th",
+      "id": 258
+    },
+    {
+      "merged": "the ",
+      "id": 259
+    },
+    {
+      "merged": "at",
+      "id": 261
+    },
+    {
+      "merged": " d",
+      "id": 263
+    }
+  ],
+  "decoded": "the small dog eats fish",
+  "vocabularySize": 272
+}

@@ -1,0 +1,449 @@
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>AI Agent Engineer Roadmap</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+/* Layout: a specialization roadmap as a node diagram. Skill areas run down one central path; their topics branch to the sides; each topic carries a tag saying where the course teaches it. */
+:root {
+  --bg: #F3F6F7;
+  --surface: #FFFFFF;
+  --ink: #16222B;
+  --muted: #586A75;
+  --line: #C9D4DA;
+  --found: #9A5B08;   /* Foundations */
+  --build: #0A6A72;   /* Build */
+  --run: #8B3668;     /* Operate */
+  --deliver: #3F6B1F; /* Deliver for others */
+  --found-soft: #F6E9D2;
+  --build-soft: #D9EEF0;
+  --run-soft: #F3E0EC;
+  --deliver-soft: #E3EFD6;
+  --deep-soft: #E4EAED;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F161B; --surface: #172127; --ink: #E5ECF0; --muted: #94A5B0; --line: #33434D;
+    --found: #E3A84C; --build: #55C3CA; --run: #DA8FBD; --deliver: #A3CC7E; --deliver-soft: #24331A;
+    --found-soft: #33290F; --build-soft: #10343A; --run-soft: #37192B; --deep-soft: #222F37;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F161B; --surface: #172127; --ink: #E5ECF0; --muted: #94A5B0; --line: #33434D;
+  --found: #E3A84C; --build: #55C3CA; --run: #DA8FBD; --deliver: #A3CC7E; --deliver-soft: #24331A;
+  --found-soft: #33290F; --build-soft: #10343A; --run-soft: #37192B; --deep-soft: #222F37;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 15px; line-height: 1.5;
+}
+.page {
+  max-width: 1060px; margin: 0 auto; padding-block: 40px 72px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 30px;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; margin: 0; text-wrap: balance; }
+h1 { font-size: 34px; line-height: 1.1; letter-spacing: -0.01em; }
+h2 { font-size: 22px; line-height: 1.2; }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.label { font-size: 11.5px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+
+[data-group="found"] { --ph: var(--found); --ph-soft: var(--found-soft); }
+[data-group="build"] { --ph: var(--build); --ph-soft: var(--build-soft); }
+[data-group="run"] { --ph: var(--run); --ph-soft: var(--run-soft); }
+[data-group="deliver"] { --ph: var(--deliver); --ph-soft: var(--deliver-soft); }
+[data-group="deep"] { --ph: var(--muted); --ph-soft: var(--deep-soft); }
+
+/* Header */
+.head { display: flex; flex-direction: column; gap: 14px; }
+.head .lede { max-width: 68ch; font-size: 16.5px; }
+.head .roles { max-width: 68ch; color: var(--muted); }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 26px; margin: 0; padding: 0; list-style: none; }
+.facts li { display: flex; align-items: baseline; gap: 7px; }
+.facts b { font-family: var(--font-display); font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Legend */
+.controls {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 28px;
+  padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+}
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 0; padding: 0; list-style: none; font-size: 13.5px; }
+.legend li { display: flex; align-items: center; gap: 7px; }
+.sw { width: 22px; height: 14px; border-radius: 3px; flex: none; }
+.sw.area { background: var(--build-soft); border: 2px solid var(--build); }
+.sw.core { background: var(--surface); border: 1.5px solid var(--build); }
+.sw.elective { background: var(--bg); border: 1.5px dashed var(--muted); }
+.sw.assumed { background: var(--bg); border: 1.5px dotted var(--muted); }
+.hint { font-size: 13.5px; color: var(--muted); }
+
+/* Diagram */
+.chart { position: relative; display: flex; flex-direction: column; gap: 30px; }
+.wires { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+.wires path { fill: none; }
+.w-spine { stroke: var(--muted); stroke-width: 2; }
+.w-core { stroke: var(--ph); stroke-width: 2; stroke-dasharray: 1 6; stroke-linecap: round; }
+.w-other { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 6 5; }
+.row {
+  position: relative; display: grid; align-items: center;
+  grid-template-columns: minmax(0, 1fr) minmax(190px, 250px) minmax(0, 1fr); column-gap: 60px;
+}
+.side { min-width: 0; display: flex; flex-direction: column; gap: 8px; }
+.side.left { align-items: flex-end; }
+.side.right { align-items: flex-start; }
+.node {
+  font: inherit; color: var(--ink); text-align: left; max-width: 100%;
+  padding: 7px 11px; border-radius: 6px; background: var(--surface); border: 1.5px solid var(--line);
+}
+button.node { cursor: pointer; }
+button.node:hover { border-color: var(--ink); }
+button.node:focus-visible, .close:focus-visible { outline: 2px solid var(--ph, var(--build)); outline-offset: 2px; }
+.node[aria-expanded="true"] { box-shadow: 0 0 0 3px var(--ph-soft); }
+.centre { justify-self: center; width: 100%; }
+.c-group { background: var(--ph); border-color: var(--ph); color: var(--surface); text-align: center; padding: 9px 14px; }
+.c-group strong { font-family: var(--font-display); font-size: 16px; font-weight: 600; display: block; }
+.c-group span { font-size: 12.5px; opacity: 0.9; display: block; }
+.c-area { background: var(--ph-soft); border: 2px solid var(--ph); padding: 9px 12px; display: flex; flex-direction: column; gap: 3px; }
+.c-area strong { font-family: var(--font-display); font-size: 15.5px; font-weight: 600; line-height: 1.25; }
+.c-area .tag { color: var(--ph); }
+.c-mile { border: 2px solid var(--ph); border-radius: 999px; background: var(--surface); text-align: center; padding: 7px 16px; display: flex; flex-direction: column; gap: 1px; }
+.c-mile strong { font-family: var(--font-display); font-size: 14.5px; font-weight: 600; color: var(--ph); }
+.tag { font-family: var(--font-mono); font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.topic { font-size: 14px; display: flex; flex-direction: column; gap: 1px; }
+.k-core { border: 1.5px solid var(--ph); }
+.k-core .tag { color: var(--ph); }
+.k-elective { background: var(--bg); border: 1.5px dashed var(--muted); }
+.k-assumed { background: var(--bg); border: 1.5px dotted var(--muted); color: var(--muted); }
+
+/* Detail panel */
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 20; width: min(430px, 100%);
+  background: var(--surface); border-left: 1px solid var(--line); overflow-y: auto;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) max(20px, env(safe-area-inset-right, 0px)) calc(24px + env(safe-area-inset-bottom, 0px)) 20px;
+  display: flex; flex-direction: column; gap: 16px;
+  box-shadow: -12px 0 32px rgba(0, 0, 0, 0.14);
+}
+.drawer-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.drawer .label { color: var(--ph, var(--muted)); }
+.close {
+  font: inherit; font-size: 13.5px; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 4px; padding: 4px 10px; cursor: pointer; flex: none;
+}
+.drawer h3 { font-size: 13px; font-family: var(--font-body); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.drawer section { display: flex; flex-direction: column; gap: 6px; }
+.drawer ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; }
+.drawer li { display: flex; flex-direction: column; }
+.drawer li .tag { font-size: 12.5px; }
+.drawer .note { color: var(--muted); font-size: 14px; }
+
+footer { color: var(--muted); font-size: 13.5px; max-width: 70ch; display: flex; flex-direction: column; gap: 6px; }
+
+@media (max-width: 760px) {
+  h1 { font-size: 27px; }
+  .chart { gap: 22px; }
+  .row { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
+  .centre { order: -1; width: auto; max-width: 100%; }
+  .side, .side.left, .side.right { align-items: flex-start; padding-left: 36px; width: 100%; }
+  .side:empty { display: none; }
+}
+</style>
+
+<div class="page">
+  <header class="head">
+    <p class="label">Specialization roadmap · mapped to the ai-edu course</p>
+    <h1>AI Agent Engineer Roadmap</h1>
+    <p class="lede">The skill areas of an engineer who designs and builds agent systems for business tasks, in the order to learn them. Each topic says where this course teaches it.</p>
+    <p class="roles">The same skills are hired under several titles: AI Engineer, Applied AI Engineer, Agent Engineer, Forward Deployed Engineer, and AI Solutions Architect.</p>
+    <ul class="facts">
+      <li><b>17</b> skill areas on the main path</li>
+      <li><b>13</b> taught in the 16-block core</li>
+      <li><b>3</b> projects</li>
+      <li><b>4</b> elective areas to go deeper</li>
+    </ul>
+  </header>
+
+  <div class="controls">
+    <ul class="legend" aria-label="Legend">
+      <li><span class="sw area"></span>Skill area</li>
+      <li><span class="sw core"></span>Taught in the core route</li>
+      <li><span class="sw elective"></span>Elective track</li>
+      <li><span class="sw assumed"></span>Assumed or not taught</li>
+    </ul>
+    <p class="hint">Select any box for details. W5 means core week 5.</p>
+  </div>
+
+  <div class="chart" id="chart">
+    <svg class="wires" id="wires" aria-hidden="true"></svg>
+  </div>
+
+  <footer>
+    <p>This is a map of the specialization, not a schedule. The week-by-week tasks are in <span class="mono">DAILY_COURSE.md</span> and progress is recorded in <span class="mono">PROGRESS.md</span>, both in the <span class="mono">ai-edu</span> folder.</p>
+    <p>The choice and order of skill areas is this course's view of the field, built from its sources and the survey <em>Agent Harness Engineering</em>. Job postings vary.</p>
+  </footer>
+</div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-labelledby="drawer-title" hidden>
+  <div class="drawer-top">
+    <div>
+      <p class="label" id="drawer-label"></p>
+      <h2 id="drawer-title"></h2>
+    </div>
+    <button type="button" class="close" id="drawer-close">Close</button>
+  </div>
+  <div id="drawer-body" style="display:flex;flex-direction:column;gap:16px"></div>
+</aside>
+
+<script>
+(function () {
+  // Topic kinds: "core" = taught in the 16-block core, "elective" = taught in an elective track, "assumed" = expected or not taught.
+  var ROWS = [
+    { group: "found", title: "Foundations", sub: "Checked in week 1, taught in elective tracks" },
+    { area: "Engineering prerequisites", g: "found", tag: "Assumed",
+      where: "Not taught. The course assumes working experience in one language and tests the parts it depends on in week 1.",
+      topics: [["One programming language", "Assumed", "assumed"], ["Git and code review", "Assumed", "assumed"], ["Automated testing", "Assumed", "assumed"], ["APIs and integrations", "Assumed", "assumed"]] },
+    { area: "How LLMs behave", g: "found", tag: "W1 check · Track A",
+      where: "Week 1, Day 5 checks that you can explain these without notes. Track A, block 1 teaches them; track C goes inside the model.",
+      topics: [["Tokens and the context window", "W1 check · A01–A05", "elective"], ["Pretraining and post-training", "W1 check · A01–A05", "elective"], ["Why a fluent answer can be wrong", "W1 check · A01–A05", "elective"], ["Context degradation", "W1 check · A06–A10", "elective"]] },
+    { area: "Operating AI assistants", g: "found", tag: "W1 check · Track P",
+      where: "Week 1, Days 1–2 check delegation, capabilities and boundaries. Track P teaches all five labs.",
+      topics: [["Delegation briefs and evidence", "W1 check · P01–P10", "elective"], ["Skills, tools and connectors", "W1 check · P11–P15", "elective"], ["Isolated workspaces", "W1 check · P16–P20", "elective"], ["Browser and desktop control", "P21–P25", "elective"], ["Background and scheduled work", "W1 check · P26–P30", "elective"]],
+      reads: [["§3.1, p. 11", "Execution environment (optional with P16)"]] },
+    { area: "Developing software with AI", g: "found", tag: "W1 check · Track A",
+      where: "Week 1, Days 3–4 check one agent-built change and one verified bug fix. Track A teaches the full workflow.",
+      topics: [["Explore, plan, code, verify", "W1 check · A06–A20", "elective"], ["Repository instructions", "A11–A15", "elective"], ["Specifications and scope", "A21–A30", "elective"], ["Reproduce, then regression test", "W1 check · A31–A40", "elective"], ["Reviewing AI-written code", "A36–A40", "elective"], ["Hooks and CI checks", "A41–A45", "elective"]],
+      reads: [["§§2.2–2.3, pp. 6–8", "Prompt, context, harness (optional with A12)"]] },
+
+    { group: "build", title: "Build", sub: "Taught in the core route" },
+    { area: "Choosing what to automate", g: "build", tag: "W2 · W10",
+      where: "Week 2, Days 6–7 for Project B, and again on Day 46 for the personal assistant. This is the solutions-architect side of the role.",
+      topics: [["Scoring candidate processes", "W2", "core"], ["Process mapping", "W2 · W10", "core"], ["Where a human stays in the loop", "W2 · W10", "core"], ["Baseline measurement", "W2", "core"], ["Data policy and privacy", "W2 · W10", "core"]] },
+    { area: "Model APIs", g: "build", tag: "W2",
+      where: "Week 2, Days 8–9. One provider's SDK, without a framework hiding the request.",
+      topics: [["Requests, responses and usage", "W2", "core"], ["Structured output and validation", "W2", "core"], ["Error handling", "W2", "core"], ["Usage budgets", "W2 · W5", "core"]] },
+    { area: "Evaluation", g: "build", tag: "W2–3 · W8–9 · W13",
+      where: "Designed in week 2 before any tuning, used every week after, and closed with a final evaluation in week 9 and a regression rerun in week 13.",
+      topics: [["Quality cases and rubrics", "W2–3", "core"], ["Development and held-out sets", "W3", "core"], ["Baselines and versioning", "W3", "core"], ["Repeated trials", "W9", "core"], ["Failure attribution", "W13", "core"], ["Regression evaluation", "W13", "core"]],
+      reads: [["§8.1, pp. 32–33", "Harness evaluation"], ["Table 3, p. 32", "Evidence to report"], ["§8.5.4, pp. 37–38", "Failure attribution"], ["§8.6.1, p. 38", "Regression evaluation"]] },
+    { area: "Context and retrieval", g: "build", tag: "W3–4",
+      where: "Weeks 3–4. A keyword baseline first, then embeddings compared on the same questions.",
+      topics: [["Keyword retrieval", "W3", "core"], ["Embeddings and chunking", "W4", "core"], ["Grounding and citations", "W4", "core"], ["Updating and deleting knowledge", "W4", "core"], ["Retrieval evaluation", "W3–4", "core"]],
+      reads: [["§§5.4–5.5, pp. 21–22", "Session state and memory"]] },
+    { area: "Tools and protocols", g: "build", tag: "W5–6",
+      where: "Week 5 designs and tests two read-only tools; week 6 exposes one capability through an MCP server.",
+      topics: [["Tool contracts", "W5", "core"], ["Schemas and argument validation", "W5", "core"], ["MCP servers and clients", "W6", "core"], ["Trust boundaries for tool input", "W5", "core"]],
+      reads: [["§§4.1–4.2, pp. 16–17", "Tool protocols and selection"]] },
+    { area: "Agent loop and harness", g: "build", tag: "W2 · W5–6 · W9",
+      where: "The seven harness layers are introduced in week 2. Week 5 builds an explicit loop with limits; week 6 compares it with a fixed workflow.",
+      topics: [["The seven harness layers", "W2", "core"], ["An explicit agent loop", "W5", "core"], ["Step, time and cost limits", "W5", "core"], ["Agent versus fixed workflow", "W6", "core"], ["Retesting the harness when the model changes", "W9", "core"]],
+      reads: [["§§2.2–2.3, pp. 6–8", "Prompt, context, harness"], ["§§6.1–6.2, pp. 25–26", "Lifecycle and inner loop"], ["§12.5, pp. 50–51", "Harnesses as models improve"]] },
+    { area: "Memory", g: "build", tag: "W4 · W11",
+      where: "Week 4 separates retrieved knowledge, session state and durable decisions. Week 11 builds memory for the personal assistant.",
+      topics: [["Session state versus durable memory", "W4", "core"], ["Source and date for every entry", "W11", "core"], ["Memory writes only after approval", "W11", "core"], ["Correction and forgetting", "W11", "core"]],
+      reads: [["§§5.5–5.7, pp. 21–24", "Persistent memory and drift"]] },
+
+    { group: "run", title: "Operate", sub: "Taught in the core route" },
+    { area: "Observability and reliability", g: "run", tag: "W6–7 · W12–13",
+      where: "Traces and timeouts in week 6, recovery in week 7, duplicate-free reruns in week 12, cost tracking in week 13.",
+      topics: [["Traces and run states", "W6", "core"], ["Timeouts", "W6", "core"], ["Bounded retries", "W7", "core"], ["Resume after interruption", "W7", "core"], ["No duplicates on rerun", "W7 · W12", "core"], ["Cost tracking", "W13", "core"]],
+      reads: [["§7.1, pp. 28–29", "Tracing"], ["§7.4, pp. 30–31", "Reliability engineering"], ["§7.3, pp. 29–30", "Cost tracking"]] },
+    { area: "Governance and security", g: "run", tag: "W5 · W7 · W10 · W12",
+      where: "Permissions and injection tests in weeks 5–6, the first approval gate in week 7, execution boundaries in week 10, and approved actions with an audit log in week 12.",
+      topics: [["Permission models", "W5", "core"], ["Prompt injection", "W5–6 · W12", "core"], ["Human approval gates", "W7 · W12", "core"], ["Audit log", "W7 · W12", "core"], ["Execution boundaries", "W10", "core"]],
+      reads: [["§9.1, pp. 39–40", "Permission models"], ["§9.2, pp. 41–42", "Lifecycle hooks"], ["§9.5, pp. 44–45", "Audit infrastructure"], ["§11.2, p. 48", "Capability versus control"], ["§3.1, p. 11", "Execution environment"]] },
+    { area: "Deployment and operations", g: "run", tag: "W8 · W12",
+      where: "Week 8 deploys Project B and runs it beside real work. Week 12 schedules the assistant's recurring run.",
+      topics: [["Controlled deployment and rollback", "W8", "core"], ["Stop procedure", "W8 · W12", "core"], ["Shadow run beside real work", "W8", "core"], ["Scheduled runs", "W12", "core"]] },
+    { area: "Proving value", g: "run", tag: "W9 · W13",
+      where: "Week 9 for Project B and week 13 for the assistant, both from measured numbers.",
+      topics: [["Value report: time, quality, cost", "W9 · W13", "core"], ["Cost, quality and speed trade-offs", "W9", "core"], ["One-page case study", "W9 · W13", "core"], ["Runbook", "W13", "core"]],
+      reads: [["§§11.1–11.3, p. 48", "Cross-layer trade-offs"]] },
+    { mile: "Project B", sub: "AI feature on a real process · weeks 2–9", g: "build",
+      where: "One repetitive process from your own work; the default is triage of real tickets. It is read-only until week 7, when one reversible action is added behind your approval.",
+      topics: [["Process map and measured baseline", "W2", "core"], ["Evaluated model call with retrieval", "W2–4", "core"], ["Tools, loop and MCP", "W5–6", "core"], ["Recovery and an approval gate", "W7", "core"], ["Shadow run, value report, case study", "W8–9", "core"]] },
+    { mile: "Project D", sub: "Personal AI assistant · weeks 10–13", g: "run",
+      where: "An assistant over your own tasks and notes. It reuses the Project B code for model calls, evaluation, tools, limits, traces and the approval gate.",
+      topics: [["Read path and a brief with sources", "W10", "core"], ["Memory you can inspect and correct", "W11", "core"], ["Approved actions and a scheduled run", "W12", "core"], ["A live week, then a value report", "W13", "core"]] },
+
+    { group: "deliver", title: "Deliver for others", sub: "Taught in the core route" },
+    { area: "Working with a process owner", g: "deliver", tag: "W14–16",
+      where: "Part E. A real person who owns a process you do not do yourself: you interview them, agree a scope, show them a prototype mid-week, and check whether they use it after handover. If nobody is available the tutor plays the owner, and the result is recorded as simulated.",
+      topics: [["Discovery conversation", "W14", "core"], ["Scope, success measure and a proposal", "W14", "core"], ["Demo and corrections", "W15", "core"], ["Saying no in writing", "W15", "core"], ["Handover and a usage check", "W16", "core"], ["Status report for a manager", "W16", "core"]] },
+    { area: "Solution design", g: "deliver", tag: "W14–16 · S01–S05",
+      where: "Part E and the five design drills. The architect's side of the work: comparing options before building, designing inside someone else's constraints, and writing what is needed before anything goes live.",
+      topics: [["Options: no AI, workflow, agent", "W14", "core"], ["Systems, owners and constraints", "W14", "core"], ["Low-code or custom build", "W15", "core"], ["Requirements and risk page", "W16", "core"], ["Rollout plan and build-or-buy", "W16", "core"], ["Design drills and a design review", "S01–S05", "core"]] },
+    { mile: "Project E", sub: "Someone else's process · weeks 14–16", g: "deliver",
+      where: "A working prototype for a process that belongs to another person, from a first conversation to a handover they can run without you.",
+      topics: [["Owner-confirmed process map and proposal", "W14", "core"], ["Prototype the owner has used", "W15", "core"], ["Runbook, rollout plan and usage check", "W16", "core"], ["Five design drills", "S01–S05", "core"]] },
+
+    { group: "deep", title: "Go deeper", sub: "Elective, after the core" },
+    { area: "Frameworks", g: "deep", tag: "Track F · 5 hours",
+      where: "Track F, after Project B. Choose one and rebuild one existing capability with it, then decide to adopt or reject.",
+      topics: [["Vercel AI SDK", "F01–F05", "elective"], ["Claude Agent SDK", "F01–F05", "elective"], ["LangGraph", "F01–F05", "elective"], ["Mastra", "F01–F05", "elective"]] },
+    { area: "Multi-agent orchestration", g: "deep", tag: "Track M · 10 hours",
+      where: "Track M, after Project B. A solver and critic pair compared with one agent on the same budget.",
+      topics: [["Solver and critic pair", "M01–M10", "elective"], ["Same-budget comparison", "M01–M10", "elective"], ["Coordination failures", "M01–M10", "elective"]],
+      reads: [["§6.3, pp. 26–27", "Multi-agent orchestration (optional with M02)"]] },
+    { area: "Model internals", g: "deep", tag: "Track C · 60 hours",
+      where: "Track C, after the core. You implement and train a small language model and run one controlled experiment.",
+      topics: [["Tokenization and embeddings", "C11–C20", "elective"], ["Attention", "C21–C30", "elective"], ["Transformer block and full model", "C31–C40", "elective"], ["Training and validation", "C41–C45", "elective"], ["Text generation", "C46–C50", "elective"]] },
+    { area: "Fine-tuning", g: "deep", tag: "Track T · 30 hours",
+      where: "Track T, after track C. A prompting baseline compared with a small LoRA adapter on held-out examples.",
+      topics: [["Dataset and splits", "T01–T05", "elective"], ["Prompting baseline", "T06–T10", "elective"], ["LoRA adapter", "T11–T20", "elective"], ["Regressions and alternatives", "T21–T30", "elective"]] },
+    { area: "Outside this course", g: "deep", tag: "Not taught",
+      where: "Parts of the field this course does not teach. Learn them when a project needs them.",
+      topics: [["Multimodal and voice agents", "Not taught", "assumed"], ["Self-hosting models", "Not taught", "assumed"], ["Vector databases at scale", "Not taught", "assumed"], ["Chat interface and streaming UX", "Only touched in track F", "assumed"]] }
+  ];
+  var GROUP_NAME = { found: "Foundations", build: "Build", run: "Operate", deliver: "Deliver for others", deep: "Go deeper" };
+
+  var chart = document.getElementById("chart");
+  var wires = document.getElementById("wires");
+  var SVGNS = "http://www.w3.org/2000/svg";
+  var spine = [], links = [], areaIndex = 0;
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  ROWS.forEach(function (row) {
+    var r = el("div", "row"), left = el("div", "side left"), right = el("div", "side right"), centre;
+    if (row.group) {
+      r.dataset.group = row.group;
+      centre = el("div", "node centre c-group");
+      centre.appendChild(el("strong", null, row.title));
+      centre.appendChild(el("span", null, row.sub));
+    } else {
+      r.dataset.group = row.g;
+      centre = el("button", "node centre " + (row.mile ? "c-mile" : "c-area"));
+      centre.type = "button";
+      centre.appendChild(el("strong", null, row.mile || row.area));
+      centre.appendChild(el("span", "tag", row.mile ? row.sub : row.tag));
+      centre.addEventListener("click", function () { openRow(row, centre); });
+      if (!row.mile) {
+        var side = areaIndex % 2 === 0 ? left : right;
+        areaIndex++;
+        row.topics.forEach(function (t) {
+          var k = el("button", "node topic k-" + t[2]);
+          k.type = "button";
+          k.appendChild(el("span", null, t[0]));
+          k.appendChild(el("span", "tag", t[1]));
+          k.addEventListener("click", function () { openRow(row, k); });
+          side.appendChild(k);
+          links.push([centre, k, t[2] === "core" ? "w-core" : "w-other", row.g]);
+        });
+      }
+    }
+    r.appendChild(left); r.appendChild(centre); r.appendChild(right);
+    chart.appendChild(r);
+    spine.push(centre);
+  });
+
+  // ---- connectors ----
+  function box(node, origin) {
+    var b = node.getBoundingClientRect();
+    return { l: b.left - origin.left, r: b.right - origin.left, t: b.top - origin.top, b: b.bottom - origin.top,
+             cx: (b.left + b.right) / 2 - origin.left, cy: (b.top + b.bottom) / 2 - origin.top };
+  }
+  function path(d, cls, group) {
+    var p = document.createElementNS(SVGNS, "path");
+    p.setAttribute("d", d);
+    p.setAttribute("class", cls);
+    if (group) p.setAttribute("data-group", group);
+    wires.appendChild(p);
+  }
+  function draw() {
+    var narrow = window.matchMedia("(max-width: 760px)").matches;
+    var origin = chart.getBoundingClientRect();
+    wires.setAttribute("width", chart.offsetWidth);
+    wires.setAttribute("height", chart.offsetHeight);
+    while (wires.firstChild) wires.removeChild(wires.firstChild);
+    function sx(b) { return narrow ? b.l + 18 : b.cx; }
+    for (var i = 1; i < spine.length; i++) {
+      var a = box(spine[i - 1], origin), c = box(spine[i], origin);
+      path("M" + sx(a) + " " + a.b + " L" + sx(c) + " " + c.t, "w-spine");
+    }
+    links.forEach(function (ln) {
+      var p = box(ln[0], origin), c = box(ln[1], origin), d;
+      if (narrow) {
+        var x = p.l + 18, rad = 10;
+        d = "M" + x + " " + p.b + " V" + (c.cy - rad) + " Q" + x + " " + c.cy + " " + (x + rad) + " " + c.cy + " H" + c.l;
+      } else if (c.r <= p.l) {
+        var m1 = (p.l + c.r) / 2;
+        d = "M" + p.l + " " + p.cy + " C" + m1 + " " + p.cy + " " + m1 + " " + c.cy + " " + c.r + " " + c.cy;
+      } else {
+        var m2 = (p.r + c.l) / 2;
+        d = "M" + p.r + " " + p.cy + " C" + m2 + " " + p.cy + " " + m2 + " " + c.cy + " " + c.l + " " + c.cy;
+      }
+      path(d, ln[2], ln[3]);
+    });
+  }
+
+  // ---- detail panel ----
+  var drawer = document.getElementById("drawer");
+  var dLabel = document.getElementById("drawer-label");
+  var dTitle = document.getElementById("drawer-title");
+  var dBody = document.getElementById("drawer-body");
+  var dClose = document.getElementById("drawer-close");
+  var opener = null;
+  function section(title) {
+    var s = el("section");
+    s.appendChild(el("h3", null, title));
+    dBody.appendChild(s);
+    return s;
+  }
+  function openRow(row, trigger) {
+    dBody.textContent = "";
+    dLabel.textContent = row.mile ? "Project · " + row.sub : GROUP_NAME[row.g] + " · " + row.tag;
+    dTitle.textContent = row.mile ? row.mile + ": " + row.sub.split(" · ")[0] : row.area;
+    section("Where in the course").appendChild(el("p", null, row.where));
+    var s = section(row.mile ? "What you deliver" : "Topics");
+    var ul = el("ul");
+    row.topics.forEach(function (t) {
+      var li = el("li");
+      li.appendChild(el("span", null, t[0]));
+      li.appendChild(el("span", "tag", t[1]));
+      ul.appendChild(li);
+    });
+    s.appendChild(ul);
+    if (row.reads) {
+      var sr = section("Survey reading");
+      var rl = el("ul");
+      row.reads.forEach(function (x) {
+        var li = el("li");
+        li.appendChild(el("span", "tag", x[0]));
+        li.appendChild(el("span", null, x[1]));
+        rl.appendChild(li);
+      });
+      sr.appendChild(rl);
+      sr.appendChild(el("p", "note", "From Agent Harness Engineering: A Survey. Each excerpt takes 10–15 minutes."));
+    }
+    if (opener) opener.setAttribute("aria-expanded", "false");
+    opener = trigger;
+    trigger.setAttribute("aria-expanded", "true");
+    drawer.dataset.group = row.g;
+    drawer.hidden = false;
+    drawer.scrollTop = 0;
+    dClose.focus();
+  }
+  function closeDrawer() {
+    if (drawer.hidden) return;
+    drawer.hidden = true;
+    if (opener) { opener.setAttribute("aria-expanded", "false"); opener.focus(); opener = null; }
+  }
+  dClose.addEventListener("click", closeDrawer);
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
+
+  draw();
+  if (window.ResizeObserver) new ResizeObserver(draw).observe(chart); else window.addEventListener("resize", draw);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+})();
+</script>

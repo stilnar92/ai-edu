@@ -1,0 +1,221 @@
+{
+  "samples": [
+    "cat",
+    "cat",
+    "car"
+  ],
+  "stages": [
+    {
+      "sequences": [
+        [
+          99,
+          97,
+          116
+        ],
+        [
+          99,
+          97,
+          116
+        ],
+        [
+          99,
+          97,
+          114
+        ]
+      ],
+      "pieces": [
+        [
+          "c",
+          "a",
+          "t"
+        ],
+        [
+          "c",
+          "a",
+          "t"
+        ],
+        [
+          "c",
+          "a",
+          "r"
+        ]
+      ],
+      "vocabularySize": 256,
+      "added": null,
+      "pairs": [
+        {
+          "left": "c",
+          "right": "a",
+          "count": 3
+        },
+        {
+          "left": "a",
+          "right": "t",
+          "count": 2
+        },
+        {
+          "left": "a",
+          "right": "r",
+          "count": 1
+        }
+      ],
+      "entries": [
+        {
+          "id": 97,
+          "piece": "a"
+        },
+        {
+          "id": 99,
+          "piece": "c"
+        },
+        {
+          "id": 114,
+          "piece": "r"
+        },
+        {
+          "id": 116,
+          "piece": "t"
+        }
+      ]
+    },
+    {
+      "sequences": [
+        [
+          256,
+          116
+        ],
+        [
+          256,
+          116
+        ],
+        [
+          256,
+          114
+        ]
+      ],
+      "pieces": [
+        [
+          "ca",
+          "t"
+        ],
+        [
+          "ca",
+          "t"
+        ],
+        [
+          "ca",
+          "r"
+        ]
+      ],
+      "vocabularySize": 257,
+      "added": {
+        "left": "c",
+        "right": "a",
+        "id": 256,
+        "piece": "ca",
+        "count": 3
+      },
+      "pairs": [
+        {
+          "left": "ca",
+          "right": "t",
+          "count": 2
+        },
+        {
+          "left": "ca",
+          "right": "r",
+          "count": 1
+        }
+      ],
+      "entries": [
+        {
+          "id": 97,
+          "piece": "a"
+        },
+        {
+          "id": 99,
+          "piece": "c"
+        },
+        {
+          "id": 114,
+          "piece": "r"
+        },
+        {
+          "id": 116,
+          "piece": "t"
+        },
+        {
+          "id": 256,
+          "piece": "ca"
+        }
+      ]
+    },
+    {
+      "sequences": [
+        [
+          257
+        ],
+        [
+          257
+        ],
+        [
+          256,
+          114
+        ]
+      ],
+      "pieces": [
+        [
+          "cat"
+        ],
+        [
+          "cat"
+        ],
+        [
+          "ca",
+          "r"
+        ]
+      ],
+      "vocabularySize": 258,
+      "added": {
+        "left": "ca",
+        "right": "t",
+        "id": 257,
+        "piece": "cat",
+        "count": 2
+      },
+      "pairs": [
+        {
+          "left": "ca",
+          "right": "r",
+          "count": 1
+        }
+      ],
+      "entries": [
+        {
+          "id": 97,
+          "piece": "a"
+        },
+        {
+          "id": 99,
+          "piece": "c"
+        },
+        {
+          "id": 114,
+          "piece": "r"
+        },
+        {
+          "id": 116,
+          "piece": "t"
+        },
+        {
+          "id": 256,
+          "piece": "ca"
+        },
+        {
+          "id": 257,
+          "piece": "cat"
+        }
+      ]
+    }
+  ]
+}
